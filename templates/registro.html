@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registrar Estudiante</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <img src="{{ url_for('static', filename='logo.png') }}" class="logo">
+
+    <h1>REGISTRO DE ESTUDIANTE</h1>
+
+    <form method="POST" action="/guardar">
+
+        <input name="documento" placeholder="Documento" required>
+        <input name="p_apellido" placeholder="Primer Apellido" required>
+        <input name="s_apellido" placeholder="Segundo Apellido">
+        <input name="p_nombre" placeholder="Primer Nombre" required>
+        <input name="s_nombre" placeholder="Segundo Nombre">
+        <input name="titulo" placeholder="Título obtenido" required>
+        <input name="universidad" placeholder="Universidad" required>
+        <input name="escalafon" placeholder="Escalafón SI/NO">
+        <input name="num_escalafon" placeholder="Número de escalafón">
+        <input name="tipo_escalafon" placeholder="Tipo de escalafón">
+        <input name="graduado" placeholder="Graduado SI/NO">
+
+        <br>
+
+        <button>Guardar estudiante</button>
+
+    </form>
+
+    <br>
+
+    <a href="/">
+        <button style="background:#6c757d;">Volver</button>
+    </a>
+
+</div>
+
+</body>
+</html>

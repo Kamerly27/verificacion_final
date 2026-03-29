@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SISTEMA DE VERIFICACIÓN DE TÍTULOS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <img src="{{ url_for('static', filename='logo.png') }}" class="logo">
+
+    <h1>SISTEMA DE VERIFICACIÓN DE TÍTULOS EN COLOMBIA</h1>
+
+    <!-- FORMULARIO CONSULTA -->
+    <form method="POST" action="/consultar">
+        <input type="text" name="documento" placeholder="Ingrese documento" required>
+        <button>Consultar</button>
+    </form>
+
+    <!-- BOTÓN REGISTRO -->
+    <br>
+    <a href="/registro">
+        <button style="background:#28a745;">Registrar nuevo estudiante</button>
+    </a>
+
+    <!-- RESULTADO -->
+    {% if resultado %}
+    <div class="card">
+        <h2>{{ resultado.p_nombre }} {{ resultado.p_apellido }}</h2>
+        <p><b>{{ resultado.titulo }}</b></p>
+
+        <p>{{ resultado.universidad }}</p>
+
+        <a href="/descargar/{{ resultado.documento }}">
+            <button>Descargar Certificado</button>
+        </a>
+
+        <br><br>
+
+        <img src="{{ qr }}" width="120">
+
+        <br><br>
+
+        <a href="{{ link }}">SISTEMA DE VERIFICACION DE TITULO UNIVERSITARIO</a>
+    </div>
+    {% endif %}
+
+    <!-- ERROR -->
+    {% if error %}
+    <p style="color:red;">{{ error }}</p>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
