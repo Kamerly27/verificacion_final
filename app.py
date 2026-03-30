@@ -1,8 +1,13 @@
 from flask import Flask, render_template, request, redirect
-import sqlite3
+import psycopg2
 import os
 
 app = Flask(__name__)
+
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+def get_conn():
+    return psycopg2.connect(DATABASE_URL)
 
 # ---------------- INICIO ----------------
 @app.route("/")
@@ -14,13 +19,13 @@ def home():
 def consultar():
     doc = request.form["documento"]
 
-    if not os.path.exists("estudiantes.db"):
-        return render_template("index.html", error="Sistema no disponible")
-
-    conn = sqlite3.connect("estudiantes.db")
+    conn = get_conn()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM estudiantes WHERE documento=?", (doc,))
+
+    cur.execute("SELECT * FROM estudiantes WHERE documento=%s", (doc,))
     row = cur.fetchone()
+
+    cur.close()
     conn.close()
 
     if not row:
@@ -58,6 +63,7 @@ def registro():
 # ---------------- GUARDAR ----------------
 @app.route("/guardar", methods=["POST"])
 def guardar():
+
     datos = (
         request.form["documento"],
         request.form["p_apellido"],
@@ -72,13 +78,18 @@ def guardar():
         request.form["graduado"]
     )
 
-    if not os.path.exists("estudiantes.db"):
-        return "Base de datos no existe"
-
-    conn = sqlite3.connect("estudiantes.db")
+    conn = get_conn()
     cur = conn.cursor()
-    cur.execute("INSERT INTO estudiantes VALUES (?,?,?,?,?,?,?,?,?,?,?)", datos)
+
+    cur.execute("""
+        INSERT INTO estudiantes 
+        (documento,p_apellido,s_apellido,p_nombre,s_nombre,titulo,
+        universidad,escalafon,num_escalafon,tipo_escalafon,graduado)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+    """, datos)
+
     conn.commit()
+    cur.close()
     conn.close()
 
     return redirect("/")
@@ -87,13 +98,13 @@ def guardar():
 @app.route("/verificar/<doc>")
 def verificar(doc):
 
-    if not os.path.exists("estudiantes.db"):
-        return "Sistema no disponible"
-
-    conn = sqlite3.connect("estudiantes.db")
+    conn = get_conn()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM estudiantes WHERE documento=?", (doc,))
+
+    cur.execute("SELECT * FROM estudiantes WHERE documento=%s", (doc,))
     row = cur.fetchone()
+
+    cur.close()
     conn.close()
 
     return render_template("publico.html", estudiante=row)
