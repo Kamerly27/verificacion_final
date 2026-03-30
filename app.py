@@ -9,6 +9,33 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 def get_conn():
     return psycopg2.connect(DATABASE_URL)
 
+# -------- CREAR TABLA AUTOMATICAMENTE ----------
+def crear_tabla():
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS estudiantes (
+        documento TEXT PRIMARY KEY,
+        p_apellido TEXT,
+        s_apellido TEXT,
+        p_nombre TEXT,
+        s_nombre TEXT,
+        titulo TEXT,
+        universidad TEXT,
+        escalafon TEXT,
+        num_escalafon TEXT,
+        tipo_escalafon TEXT,
+        graduado TEXT
+    )
+    """)
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+crear_tabla()
+
 # ---------------- INICIO ----------------
 @app.route("/")
 def home():
